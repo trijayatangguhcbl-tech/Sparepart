@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Order Material</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#eef2f7;
+}
+
+.header{
+    background:linear-gradient(
+        135deg,
+        #1976d2,
+        #0d47a1
+    );
+    color:white;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+
+.header button{
+    margin-top:10px;
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    background:white;
+    color:#1976d2;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.menu-grid{
+    padding:20px;
+    display:grid;
+    gap:20px;
+}
+
+.menu-card{
+    background:white;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+    cursor:pointer;
+    transition:.3s;
+    text-align:center;
+}
+
+.menu-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+.menu-card .icon{
+    font-size:48px;
+    margin-bottom:10px;
+}
+
+.menu-card .title{
+    font-size:18px;
+    font-weight:bold;
+    color:#333;
+}
+
+.menu-card .desc{
+    color:#777;
+    margin-top:5px;
+    font-size:13px;
+}
+
+.summary{
+    display:flex;
+    gap:10px;
+    padding:15px;
+}
+
+.info-box{
+    flex:1;
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.info-box h3{
+    margin:0;
+    color:#1976d2;
+    font-size:24px;
+}
+	
+</style>
+</head>
+
+<body>
+	
+<div class="header">
+
+    <h2>🛒 ORDER MATERIAL</h2>
+
+    <button onclick="location.href='dashboard.html'">
+        ← Dashboard
+    </button>
+
+</div>
+
+<div class="summary">
+
+    <div class="info-box">
+        <h3 id="processQty">0</h3>
+        <p>Process Pengajuan</p>
+    </div>
+
+    <div class="info-box">
+        <h3 id="doneQty">0</h3>
+        <p>On Order</p>
+    </div>
+
+</div>
+
+<div class="menu-grid">
+
+    <div class="menu-card"
+         onclick="location.href='material-order.html'">
+
+        <div class="icon">📦</div>
+
+        <div class="title">
+            Material Umum
+        </div>
+
+        <div class="desc">
+            Cari dan pilih material
+        </div>
+
+    </div>
+
+    <div class="menu-card"
+         onclick="location.href='order-cart.html'">
+
+        <div class="icon">🛒</div>
+
+        <div class="title">
+            Keranjang Order
+        </div>
+
+        <div class="desc">
+            Material yang siap diajukan
+        </div>
+
+    </div>
+
+    <div class="menu-card"
+         onclick="location.href='order-history.html'">
+
+        <div class="icon">📜</div>
+
+        <div class="title">
+            Riwayat Order
+        </div>
+
+        <div class="desc">
+            Lihat histori pengajuan
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="js/login.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+
+const ORDER_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=110003674&single=true&output=csv";
+
+loadSummary();
+
+function loadSummary(){
+
+    Papa.parse(ORDER_URL,{
+        download:true,
+        header:true,
+        skipEmptyLines:true,
+
+        complete:function(result){
+
+            let processQty = 0;
+            let doneQty = 0;
+
+            result.data.forEach(item=>{
+
+                let qty =
+                Number(item["Qty"]) || 0;
+
+                let status =
+                (item["Status"] || "")
+                .toUpperCase();
+
+                if(status === "PROCESS"){
+                    processQty += qty;
+                }
+
+                if(status === "DONE"){
+                    doneQty += qty;
+                }
+
+            });
+
+            document.getElementById("processQty")
+            .innerText = processQty;
+
+            document.getElementById("doneQty")
+            .innerText = doneQty;
+
+        }
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

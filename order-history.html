@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat Order</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#eef2f7;
+}
+
+.header{
+    background:linear-gradient(135deg,#1976d2,#0d47a1);
+    color:white;
+    text-align:center;
+    padding:20px;
+    border-radius:0 0 20px 20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.back-btn{
+    margin-top:10px;
+    border:none;
+    background:white;
+    color:#1976d2;
+    padding:10px 15px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    overflow:hidden;
+}
+
+.table-wrap{
+    width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+}
+
+table{
+    width:100%;
+    min-width:900px;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1976d2;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    font-size:13px;
+}
+
+tr:nth-child(even){
+    background:#f8f9fa;
+}
+
+.status-open{
+    color:#d32f2f;
+    font-weight:bold;
+}
+
+.status-process{
+    color:#f57c00;
+    font-weight:bold;
+}
+
+.status-done{
+    color:#2e7d32;
+    font-weight:bold;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+.order-card{
+    background:#fff;
+    border-radius:15px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.nomor{
+    font-weight:bold;
+    color:#666;
+}
+
+.status{
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status.open{
+    background:#ffebee;
+    color:#d32f2f;
+}
+
+.status.process{
+    background:#fff3cd;
+    color:#f57c00;
+}
+
+.status.done{
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.order-card h3{
+    color:#1976d2;
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.info{
+    margin:5px 0;
+    font-size:14px;
+}
+
+.notes{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid #eee;
+    color:#666;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>📦 RIWAYAT ORDER</h2>
+
+    <button
+        class="back-btn"
+        onclick="location.href='order.html'">
+        ← Order
+    </button>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div id="orderArea" class="loading">
+            Memuat data...
+        </div>
+    </div>
+</div>
+
+<<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+
+const ORDER_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=110003674&single=true&output=csv";
+
+loadHistory();
+
+function loadHistory(){
+
+    Papa.parse(ORDER_URL,{
+        download:true,
+        header:true,
+        skipEmptyLines:true,
+
+        complete:function(result){
+
+            let data = result.data;
+
+            let html = "";
+
+            data.reverse().forEach((item,index)=>{
+
+                let status =
+                (item["Status"] || "OPEN").toUpperCase();
+
+                html += `
+                <div class="order-card">
+
+                    <div class="card-header">
+                        <span class="nomor">
+                            #${index+1}
+                        </span>
+
+                        <span class="status ${status.toLowerCase()}">
+                            ${status}
+                        </span>
+                    </div>
+
+                    <h3>
+                        ${item["Nama part"] || "-"}
+                    </h3>
+
+                    <div class="info">
+                        <b>SAP :</b>
+                        ${item["SAP"] || "-"}
+                    </div>
+
+                    <div class="info">
+                        <b>Qty :</b>
+                        ${item["Qty"] || "-"}
+                    </div>
+
+                    <div class="info">
+                        <b>Urgency :</b>
+                        ${item["urgency"] || "-"}
+                    </div>
+
+                    <div class="info">
+                        <b>Requestor :</b>
+                        ${item["requestor"] || "-"}
+                    </div>
+
+                    <div class="info">
+                        <b>Tanggal :</b>
+                        ${item["tanggal"] || "-"}
+                    </div>
+
+                    <div class="notes">
+                        ${item["notes"] || "-"}
+                    </div>
+
+                </div>
+                `;
+            });
+
+            document.getElementById("orderArea").innerHTML = html;
+
+        }
+    });
+
+}
+
+</script>
+
+</body>
+</html>

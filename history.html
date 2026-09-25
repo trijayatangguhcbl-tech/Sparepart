@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riwayat Request</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#eef2f7;
+}
+
+.header{
+    background:linear-gradient(135deg,#1976d2,#0d47a1);
+    color:white;
+    text-align:center;
+    padding:20px;
+    border-radius:0 0 20px 20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.back-btn{
+    margin-top:10px;
+    border:none;
+    background:white;
+    color:#1976d2;
+    padding:10px 15px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.container{
+    padding:15px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    min-width:650px;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1976d2;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:10px;
+    border-bottom:1px solid #ddd;
+    font-size:13px;
+}
+
+tr:nth-child(even){
+    background:#f8f9fa;
+}
+
+.status-open{
+    color:#ff9800;
+    font-weight:bold;
+}
+
+.status-close{
+    color:#4caf50;
+    font-weight:bold;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+</style>
+
+</head>
+<body>
+
+<div class="header">
+    <h2>📜 RIWAYAT REQUEST</h2>
+
+    <button class="back-btn"
+        onclick="location.href='request.html'">
+        ← Request
+    </button>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div id="historyArea" class="loading">
+            Memuat Data...
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+
+const HISTORY_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=250923026&single=true&output=csv";
+
+loadHistory();
+
+function loadHistory(){
+
+    Papa.parse(HISTORY_URL,{
+        download:true,
+        header:true,
+        skipEmptyLines:true,
+
+        complete:function(result){
+
+            let data = result.data;
+
+            let html = `
+            <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Tanggal</th>
+                        <th>Nama Part</th>
+                        <th>SAP</th>
+                        <th>Qty</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            data.reverse().forEach((item,index)=>{
+
+                let status =
+                (item["Status"] || "OPEN").toUpperCase();
+
+                html += `
+                    <tr>
+                        <td>${index+1}</td>
+                        <td>${item["tanggal"] || "-"}</td>
+                        <td>${item["Nama part"] || "-"}</td>
+                        <td>${item["SAP"] || "-"}</td>
+                        <td>${item["Qty"] || "-"}</td>
+                        <td class="${status === 'CLOSE' ? 'status-close' : 'status-open'}">
+                            ${status}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                </tbody>
+            </table>
+            </div>
+            `;
+
+            document.getElementById("historyArea").innerHTML = html;
+
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

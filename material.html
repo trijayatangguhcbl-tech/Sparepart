@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sparepart Finder</title>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.header button{
+    padding:10px 15px;
+    border:none;
+    background:#0d6efd;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+#searchInput{
+    width:100%;
+    padding:12px;
+    margin-bottom:20px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,.1);
+}
+
+.card h3{
+    margin-top:0;
+    color:#0d6efd;
+}
+
+.btn{
+    padding:8px 12px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin-right:5px;
+}
+
+.req{
+    background:#198754;
+    color:white;
+}
+
+.fav{
+    background:#ffc107;
+}
+
+.order{
+    background:#fd7e14;
+    color:white;
+}
+
+</style>
+
+</head>
+<body>
+
+<div class="header">
+    <button onclick="location.href='request.html'">
+        ← request
+    </button>
+
+    <h2>Sparepart Finder</h2>
+</div>
+
+<input
+type="text"
+id="searchInput"
+placeholder="Cari SAP, Nama Part, Material..."
+onkeyup="loadSparepart()">
+
+<div id="result">
+Loading Data...
+</div>
+
+<script>
+
+const SHEET_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTeEoFLkSsqeUMt1-Twhsy97KTf9VAPEFBZco4ZvOBiZhuUr9kKiqDeolnATfjcsg/pub?gid=1610358830&single=true&output=csv";
+
+let sparepartDB = [];
+
+
+Papa.parse(SHEET_URL,{
+    download:true,
+    header:true,
+    skipEmptyLines:true,
+
+    complete:function(results){
+
+        console.log(results.data);
+
+        sparepartDB = results.data;
+
+        loadSparepart();
+    },
+
+    error:function(err){
+        console.log(err);
+        document.getElementById("result").innerHTML =
+        "Gagal membaca Google Sheet";
+    }
+});
+
+function loadSparepart(){
+
+    let keyword =
+    document.getElementById("searchInput")
+    .value
+    .toLowerCase();
+
+    let html = "";
+
+    let data =
+    sparepartDB.filter(item =>
+        JSON.stringify(item)
+        .toLowerCase()
+        .includes(keyword)
+    );
+
+    if(data.length===0){
+
+        html="<p>Data tidak ditemukan</p>";
+
+    }else{
+
+        data.forEach(item=>{
+
+            html+=`
+
+				 <div class="card">
+
+				 <div class="name part">
+				 ${item["DESCRIPTION"]||"-"}
+				 </div>
+				 <b>SAP :</b> ${item["SAP"]||"-"}<br>
+				 <b>Program :</b> ${item["PROGRAM"]||"-"}<br>
+				 <b>Notes :</b> ${item["NOTES"]||"-"}<br><br>
+				
+				<button
+				class="btn req"
+				onclick="addRequest('${item["SAP"]}')">
+				Request
+				</button>
+
+				<button
+				class="btn fav"
+				onclick="addFavorite('${item["SAP"]}')">
+				Favorit
+				</button>
+
+            </div>
+            `;
+        });
+    }
+
+    document.getElementById("result").innerHTML = html;
+}
+function addRequest(sap){
+
+    let item =
+    sparepartDB.find(x => x["SAP"] === sap);
+
+    let cart =
+    JSON.parse(localStorage.getItem("request") || "[]");
+
+    let existing =
+    cart.find(x => x["SAP"] === sap);
+
+    if(existing){
+
+        existing.qty++;
+
+    }else{
+
+        item.qty = 1;
+
+        cart.push(item);
+
+    }
+
+    localStorage.setItem(
+        "request",
+        JSON.stringify(cart)
+    );
+
+    alert("Masuk Keranjang");
+}
+function addFavorite(sap){
+
+    let item =
+    sparepartDB.find(x => x["SAP"] === sap);
+
+    let fav =
+    JSON.parse(localStorage.getItem("favorite") || "[]");
+
+    let ada =
+    fav.find(x => x["SAP"] === sap);
+
+    if(ada){
+
+        alert("Sudah ada di Favorite");
+        return;
+    }
+
+    fav.push(item);
+
+    localStorage.setItem(
+        "favorite",
+        JSON.stringify(fav)
+    );
+
+    alert("Masuk Favorite");
+}
+</script>
+
+</body>
+</html>

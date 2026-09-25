@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WTP Portal</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1976d2">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+<meta name="theme-color" content="#1976d2">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#eef2f7;
+}
+
+.header{
+    background:linear-gradient(135deg,#1976d2,#0d47a1);
+    color:white;
+    padding:25px 20px;
+    border-radius:0 0 25px 25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.15);
+}
+
+.header h1{
+    font-size:24px;
+}
+
+.user-info{
+    margin-top:10px;
+    font-size:14px;
+    opacity:.9;
+}
+
+.menu{
+    padding:15px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px 10px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    cursor:pointer;
+    transition:.2s;
+}
+
+.card:active{
+    transform:scale(.97);
+}
+
+.icon{
+    font-size:40px;
+    margin-bottom:10px;
+}
+
+.title{
+    font-size:15px;
+    font-weight:bold;
+    color:#333;
+}
+
+.desc{
+    font-size:12px;
+    color:#777;
+    margin-top:5px;
+}
+
+.logout-area{
+    padding:15px;
+}
+
+.logout{
+    width:100%;
+    border:none;
+    background:#e53935;
+    color:white;
+    padding:14px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    color:#777;
+    font-size:12px;
+    padding:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🏭 WTP PORTAL</h1>
+
+    <div class="user-info">
+        Login Sebagai :
+        <b id="roleText"></b>
+    </div>
+</div>
+
+<div class="menu">
+
+    <div class="card"
+        onclick="location.href='request.html'">
+        <div class="icon">📋</div>
+        <div class="title">REQUEST</div>
+        <div class="desc">
+            Permintaan Material
+        </div>
+    </div>
+
+    <div class="card"
+        onclick="location.href='order.html'">
+        <div class="icon">📦</div>
+        <div class="title">ORDER</div>
+        <div class="desc">
+            Order Material
+        </div>
+    </div>
+
+    <div
+        id="monitoringMenu"
+        class="card"
+        onclick="location.href='monitoring.html'">
+
+        <div class="icon">📈</div>
+        <div class="title">MONITORING</div>
+        <div class="desc">
+            Tracking Progress
+        </div>
+
+    </div>
+
+</div>
+
+<div class="logout-area">
+
+    <button
+        class="logout"
+        onclick="logout()">
+        🚪 LOGOUT
+    </button>
+
+</div>
+
+<div class="footer">
+    CC/CW & WTP Material System
+</div>
+
+<script>
+
+const role =
+localStorage.getItem("role");
+
+if(!role){
+    alert("Silakan Login");
+    location.href="index.html";
+}
+
+document.getElementById("roleText")
+.innerText = role.toUpperCase();
+
+if(role==="maintenance"){
+    document
+    .getElementById("monitoringMenu")
+    .style.display="none";
+}
+
+function logout(){
+    localStorage.clear();
+    location.href="index.html";
+}
+
+</script>
+
+</body>
+</html>

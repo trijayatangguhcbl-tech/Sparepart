@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI',sans-serif;
+    background:#eef2f7;
+    min-height:100vh;
+}
+
+.header{
+    background:linear-gradient(135deg,#1976d2,#0d47a1);
+    color:white;
+    text-align:center;
+    padding:25px 15px;
+    border-radius:0 0 20px 20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.header h2{
+    margin-bottom:10px;
+    font-size:24px;
+}
+
+.back-btn{
+    border:none;
+    padding:10px 15px;
+    border-radius:10px;
+    background:white;
+    color:#1976d2;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.menu-grid{
+    padding:15px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.menu-card{
+    background:#fff;
+    border-radius:15px;
+    padding:20px 10px;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
+    transition:.2s;
+}
+
+.menu-card:active{
+    transform:scale(.97);
+}
+
+.menu-card .icon{
+    font-size:34px;
+    margin-bottom:8px;
+}
+
+.menu-card .title{
+    font-size:14px;
+    font-weight:bold;
+    color:#333;
+}
+
+.menu-card .desc{
+    font-size:11px;
+    color:#777;
+    margin-top:5px;
+}
+
+.full{
+    grid-column:span 2;
+}
+
+.footer{
+    text-align:center;
+    color:#777;
+    font-size:12px;
+    padding:15px;
+}
+
+@media (min-width:768px){
+    .menu-grid{
+        max-width:700px;
+        margin:auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>📋 REQUEST MATERIAL</h2>
+
+    <button class="back-btn"
+        onclick="location.href='dashboard.html'">
+        ← Dashboard
+    </button>
+</div>
+
+<div class="menu-grid">
+
+    <div class="menu-card"
+        onclick="location.href='sparepart.html'">
+        <div class="icon">🔧</div>
+        <div class="title">SPAREPART</div>
+        <div class="desc">Request Sparepart WTP</div>
+    </div>
+
+    <div class="menu-card"
+        onclick="location.href='material.html'">
+        <div class="icon">📦</div>
+        <div class="title">MATERIAL</div>
+        <div class="desc">Request Material Umum</div>
+    </div>
+
+    <div class="menu-card"
+        onclick="location.href='cart.html'">
+        <div class="icon">🛒</div>
+        <div class="title">KERANJANG</div>
+        <div class="desc">Daftar Request</div>
+    </div>
+
+    <div class="menu-card"
+        onclick="location.href='favorite.html'">
+        <div class="icon">⭐</div>
+        <div class="title">FAVORITE</div>
+        <div class="desc">Part Favorit</div>
+    </div>
+
+    <div class="menu-card full"
+        onclick="location.href='history.html'">
+        <div class="icon">📜</div>
+        <div class="title">RIWAYAT REQUEST</div>
+        <div class="desc">History Permintaan Material</div>
+    </div>
+
+</div>
+
+<div class="footer">
+    CC/CW & WTP Material Request System
+</div>
+
+</body>
+</html>

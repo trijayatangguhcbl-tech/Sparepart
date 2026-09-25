@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart Request</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.back-btn{
+    border:none;
+    background:#0d6efd;
+    color:white;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.cart-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 0;
+    border-bottom:1px solid #ddd;
+}
+
+.item-info h3{
+    margin:0;
+    font-size:18px;
+}
+
+.item-info p{
+    margin:5px 0;
+    color:#666;
+}
+
+.actions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.qty-btn{
+    width:35px;
+    height:35px;
+    border:none;
+    border-radius:5px;
+    background:#0d6efd;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.qty{
+    min-width:30px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.delete-btn{
+    width:35px;
+    height:35px;
+    border:none;
+    border-radius:5px;
+    background:red;
+    color:white;
+    cursor:pointer;
+}
+
+.total{
+    margin-top:20px;
+    text-align:right;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.confirm-btn{
+    width:100%;
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:8px;
+    background:green;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.empty{
+    text-align:center;
+    color:gray;
+    padding:40px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h2>Keranjang Order</h2>
+
+        <button class="back-btn"
+        onclick="location.href='order.html'">
+            ← back
+        </button>
+    </div>
+
+    <div id="cartList"></div>
+
+    <div class="total" id="totalItem">
+        Total Item : 0
+    </div>
+		<div style="margin-top:15px;">
+
+    <label style="
+        display:block;
+        margin-bottom:5px;
+        font-weight:bold;
+    ">
+        Urgency
+    </label>
+
+    <select id="urgency" style="
+        width:100%;
+        height:38px;
+        border:1px solid #ccc;
+        border-radius:5px;
+        margin-bottom:15px;
+    ">
+        <option value="STOCK">STOCK</option>
+        <option value="PLANNED">PLANNED</option>
+        <option value="URGENT">URGENT</option>
+    </select>
+
+    <label style="
+        display:block;
+        margin-bottom:5px;
+        font-weight:bold;
+    ">
+        notes
+    </label>
+
+    <textarea
+        id="notes"
+        placeholder="Masukkan keterangan order..."
+        style="
+        width:100%;
+        height:60px;
+        padding:8px;
+        border:1px solid #ccc;
+        border-radius:5px;
+        resize:none;
+        box-sizing:border-box;
+    "></textarea>
+
+	</div>
+    <button class="confirm-btn"
+    onclick="konfirmasiWA()">
+        KONFIRMASI REQUEST
+    </button>
+
+</div>
+
+<script>
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
+
+loadCart();
+async function kirimHistoryKeSheet(cart){
+			const notes =
+		document.getElementById("notes").value;
+
+		const urgency =
+		document.getElementById("urgency").value;
+    for(const item of cart){
+
+        try{
+
+            const res = await fetch(SCRIPT_URL,{
+					method:"POST",
+					mode:"no-cors",
+					headers:{
+						"Content-Type":"text/plain"
+					},
+                body:JSON.stringify({
+				tipe:"ORDER",
+				namaPart:item["Name part"] || item["DESCRIPTION"] || "-",
+				sap:item["SAP"] || "-",
+				qty:item.qty || 1,
+				status:"WAITING CODE SAP",
+				requestor:"USER",
+				notes:notes,
+				urgency:urgency
+			})
+            });
+
+            const hasil = await res.text();
+
+            console.log("HASIL:",hasil);
+
+        }catch(err){
+
+            console.log("ERROR:",err);
+        }
+    }
+}
+
+function loadCart(){
+
+    let cart =
+    JSON.parse(localStorage.getItem("order") || "[]");
+
+    let html = "";
+    let total = 0;
+
+    if(cart.length === 0){
+
+        html =
+        '<div class="empty">Keranjang Kosong</div>';
+
+    }else{
+
+        cart.forEach((item,index)=>{
+
+            let qty = item.qty || 1;
+
+            total += qty;
+
+            html += `
+            <div class="cart-item">
+
+                <div class="item-info">
+
+                    <h3>
+					${item["name part"] || item["DESCRIPTION"] || "-"}
+					</h3>
+
+                    <p>
+                    SAP :
+                    ${item["SAP"] || "-"}
+                    </p>
+
+                </div>
+
+                <div class="actions">
+
+                    <button
+                    class="qty-btn"
+                    onclick="minusQty(${index})">
+                    -
+                    </button>
+
+                    <div class="qty">
+                    ${qty}
+                    </div>
+
+                    <button
+                    class="qty-btn"
+                    onclick="plusQty(${index})">
+                    +
+                    </button>
+
+                    <button
+                    class="delete-btn"
+                    onclick="hapusItem(${index})">
+                    🗑
+                    </button>
+
+                </div>
+
+            </div>
+            `;
+        });
+    }
+
+    document.getElementById("cartList").innerHTML = html;
+
+    document.getElementById("totalItem").innerHTML =
+    "Total Item : " + total;
+}
+
+function plusQty(index){
+
+    let cart =
+    JSON.parse(localStorage.getItem("order") || "[]");
+
+    if(!cart[index].qty){
+        cart[index].qty = 1;
+    }
+
+    cart[index].qty++;
+
+    localStorage.setItem(
+        "order",
+        JSON.stringify(cart)
+    );
+
+    loadCart();
+}
+
+function minusQty(index){
+
+    let cart =
+    JSON.parse(localStorage.getItem("order") || "[]");
+
+    if(!cart[index].qty){
+        cart[index].qty = 1;
+    }
+
+    if(cart[index].qty > 1){
+        cart[index].qty--;
+    }
+
+    localStorage.setItem(
+        "order",
+        JSON.stringify(cart)
+    );
+
+    loadCart();
+}
+
+function hapusItem(index){
+
+    if(confirm("Hapus item ini?")){
+
+        let cart =
+        JSON.parse(localStorage.getItem("order") || "[]");
+
+        cart.splice(index,1);
+
+        localStorage.setItem(
+            "order",
+            JSON.stringify(cart)
+        );
+
+        loadCart();
+    }
+}
+
+async function konfirmasiWA(){
+
+    let cart =
+    JSON.parse(localStorage.getItem("order") || "[]");
+
+    if(cart.length === 0){
+        alert("Keranjang Kosong");
+        return;
+    }
+
+    let pesan = "*ORDER MATERIAL WTP*%0A%0A";
+
+    cart.forEach((item,no)=>{
+
+        const nama =
+        item["name part"] ||
+        item["DESCRIPTION"] ||
+        "-";
+
+        pesan +=
+        `${no+1}. ${nama}%0A` +
+        `SAP : ${item["SAP"] || "-"}%0A` +
+        `Qty : ${item.qty || 1}%0A` +
+        `====================%0A`;
+
+    });
+
+    const waUrl =
+    `https://wa.me/?text=${pesan}`;
+
+    // kirim ke sheet
+    await kirimHistoryKeSheet(cart);
+
+    // buka whatsapp
+    window.open(waUrl,"_blank");
+
+    // kosongkan keranjang
+    localStorage.removeItem("order");
+
+    // reset form
+    document.getElementById("notes").value = "";
+    document.getElementById("urgency").value = "STOCK";
+	
+    // refresh tampilan
+    loadCart();
+	
+	location.reload();
+	
+    alert("Order berhasil dikirim");
+}
+
+</script>
+
+</body>
+</html>

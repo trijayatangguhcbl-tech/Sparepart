@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Monitoring SPV</title>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:#eef2f7;
+}
+
+.header{
+    background:linear-gradient(135deg,#1976d2,#0d47a1);
+    color:white;
+    padding:20px;
+    border-radius:0 0 20px 20px;
+}
+
+.header h2{
+    margin:0;
+}
+
+.container{
+    max-width:1300px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.menu{
+    display:flex;
+    gap:10px;
+    margin:15px;
+}
+
+.menu button{
+    flex:1;
+    border:none;
+    padding:12px;
+    border-radius:12px;
+    font-weight:bold;
+    background:white;
+    color:#1976d2;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#0d6efd;
+    color:white;
+}
+
+td,th{
+    border:1px solid #ddd;
+    padding:8px;
+}
+
+.status-open{
+    background:#dc3545;
+    color:white;
+}
+
+.status-process{
+    background:#ffc107;
+}
+
+.status-done{
+    background:#198754;
+    color:white;
+}
+
+.status-waiting{
+    background:#dc3545;
+    color:white;
+}
+
+select{
+    padding:5px;
+}
+
+.save-btn{
+    background:#198754;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.table-wrap{
+    overflow-x:auto;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h2>📊 Monitoring SPV</h2>
+</div>
+
+<div class="container">
+
+<div class="menu">
+
+	<button class="back-btn"
+            onclick="location.href='dashboard.html'">
+               ← Back
+	</button>
+
+<button onclick="loadRequest()">
+REQUEST
+</button>
+
+<button onclick="loadOrder()">
+ORDER
+</button>
+
+</div>
+
+<div id="content">
+Loading...
+</div>
+
+</div>
+
+<script>
+
+const SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
+
+const REQUEST_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=250923026&single=true&output=csv";
+
+const ORDER_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=110003674&single=true&output=csv";
+
+loadRequest();
+
+function getStatusClass(status){
+
+    status = (status || "").toUpperCase();
+
+    if(status === "OPEN")
+        return "status-open";
+
+    if(status === "PROCESS")
+        return "status-process";
+
+    if(status === "DONE")
+        return "status-done";
+
+    if(status === "WAITING CODE SAP")
+        return "status-waiting";
+
+    return "";
+}
+
+function loadRequest(){
+
+    Papa.parse(REQUEST_URL,{
+        download:true,
+        header:true,
+        skipEmptyLines:true,
+
+        complete:function(result){
+
+            let html = `
+			<div class="table-wrap">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Nama Part</th>
+                    <th>SAP</th>
+                    <th>Qty</th>
+                    <th>Requestor</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            `;
+
+            result.data.reverse().forEach((item,index)=>{
+
+                html += `
+                <tr>
+
+                    <td>${index+1}</td>
+
+                    <td>
+                    ${item["tanggal "] ||
+                      item["tanggal"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["Nama part"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["SAP"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["Qty"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["Requestor"] || "-"}
+                    </td>
+
+                    <td class="
+                    ${getStatusClass(item["Status"])}
+                    ">
+                    ${item["Status"] || "OPEN"}
+                    </td>
+
+                    <td>
+
+                        <select id="req${index}">
+
+                            <option value="OPEN">
+                            OPEN
+                            </option>
+
+                            <option value="PROCESS">
+                            PROCESS
+                            </option>
+
+                            <option value="DONE">
+                            DONE
+                            </option>
+
+                        </select>
+
+                        <button
+                        class="save-btn"
+                        onclick="
+                        updateRequest(
+                        ${result.data.length-index+1},
+                        document.getElementById('req${index}').value
+                        )">
+
+                        Simpan
+
+                        </button>
+
+                    </td>
+
+                </tr>
+                `;
+            });
+
+            html += "</table>";
+
+            document.getElementById("content")
+            .innerHTML = html;
+        }
+    });
+
+}
+
+function loadOrder(){
+
+    Papa.parse(ORDER_URL,{
+        download:true,
+        header:true,
+        skipEmptyLines:true,
+
+        complete:function(result){
+
+            let html = `
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Tanggal</th>
+                    <th>Nama Part</th>
+                    <th>SAP</th>
+                    <th>Qty</th>
+                    <th>Urgency</th>
+                    <th>Requestor</th>
+                    <th>Note</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            `;
+
+            result.data.reverse().forEach((item,index)=>{
+
+                html += `
+                <tr>
+
+                    <td>${index+1}</td>
+
+                    <td>
+                    ${item["tanggal "] ||
+                      item["tanggal"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["Nama part"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["SAP"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["Qty"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["urgency"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["requestor"] || "-"}
+                    </td>
+
+                    <td>
+                    ${item["notes"] || "-"}
+                    </td>
+
+                    <td class="
+                    ${getStatusClass(item["Status"])}
+                    ">
+                    ${item["Status"] || "-"}
+                    </td>
+
+                    <td>
+
+                        <select id="ord${index}">
+
+                            <option value="WAITING CODE SAP">
+                            WAITING CODE SAP
+                            </option>
+
+                            <option value="PROCESS">
+                            PROCESS
+                            </option>
+
+                            <option value="DONE">
+                            DONE
+                            </option>
+
+                        </select>
+
+                        <button
+                        class="save-btn"
+                        onclick="
+                        updateOrder(
+                        ${result.data.length-index+1},
+                        document.getElementById('ord${index}').value
+                        )">
+
+                        Simpan
+
+                        </button>
+
+                    </td>
+
+                </tr>
+                `;
+            });
+
+            html += "</table>";
+
+            document.getElementById("content")
+            .innerHTML = html;
+        }
+    });
+
+}
+
+async function updateRequest(row,status){
+
+    await fetch(SCRIPT_URL,{
+        method:"POST",
+        mode:"no-cors",
+        headers:{
+            "Content-Type":"text/plain"
+        },
+        body:JSON.stringify({
+            action:"UPDATE_REQUEST",
+            row:row,
+            status:status
+        })
+    });
+
+    alert("Status Request berhasil diubah");
+
+    setTimeout(()=>{
+        loadRequest();
+    },1000);
+}
+
+async function updateOrder(row,status){
+
+    await fetch(SCRIPT_URL,{
+        method:"POST",
+        mode:"no-cors",
+        headers:{
+            "Content-Type":"text/plain"
+        },
+        body:JSON.stringify({
+            action:"UPDATE_ORDER",
+            row:row,
+            status:status
+        })
+    });
+
+    alert("Status Order berhasil diubah");
+
+    setTimeout(()=>{
+        loadOrder();
+    },1000);
+}
+
+</script>

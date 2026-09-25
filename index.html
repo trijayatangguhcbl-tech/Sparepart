@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WTP PORTAL</title>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1976d2">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+
+<style>
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:linear-gradient(
+        135deg,
+        #1565c0,
+        #26a69a
+    );
+
+    font-family:Arial,sans-serif;
+}
+
+.login-container{
+    width:90%;
+    max-width:380px;
+
+    background:white;
+    padding:30px;
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,.2);
+}
+
+.logo{
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    margin-bottom:15px;
+}
+
+h1{
+    margin:0;
+    color:#1565c0;
+}
+
+p{
+    color:#666;
+    margin-bottom:25px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    margin-bottom:15px;
+    box-sizing:border-box;
+}
+
+button{
+    width:100%;
+    padding:14px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#1976d2;
+    color:white;
+    font-weight:bold;
+    font-size:16px;
+
+    cursor:pointer;
+}
+
+button:hover{
+    background:#125ca8;
+}
+
+</style>
+
+</head>
+
+<script>
+
+if ("serviceWorker" in navigator) {
+
+    window.addEventListener("load", () => {
+
+        navigator.serviceWorker
+        .register("sw.js")
+        .then(() => {
+
+            console.log("PWA Aktif");
+
+        });
+
+    });
+
+}
+
+</script>
+
+<body>
+
+<div class="login-container">
+    <link rel="icon" type="image/png" href="icon-512.png">
+
+    <h1>WTP Portal</h1>
+    <p>Request Material & Monitoring Stock</p>
+
+    <input type="password"
+           id="password"
+           placeholder="Masukkan Password">
+
+    <button onclick="login()">
+        Masuk
+    </button>
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>
