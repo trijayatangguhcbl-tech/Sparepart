@@ -3,8 +3,8 @@
   "short_name": "Sparepart",
   "description": "Pencarian Sparepart Internal",
 
-  "start_url": "/sparepart/",
-  "scope": "/sparepart/",
+  "start_url": "/Sparepart/",
+  "scope": "/Sparepart/",
 
   "display": "standalone",
   "background_color": "#ffffff",
