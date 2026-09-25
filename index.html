@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>WTP PORTAL</title>
 
 <link rel="stylesheet" href="css/style.css">
@@ -15,89 +16,125 @@
 body{
     margin:0;
     min-height:100vh;
+
     display:flex;
     justify-content:center;
     align-items:center;
 
     background:linear-gradient(
         135deg,
-        #1565c0,
-        #26a69a
+        #0f4c81,
+        #1e88e5
     );
 
     font-family:'Segoe UI',sans-serif;
     padding:20px;
 }
-
+    
 .login-container{
     width:100%;
-    max-width:420px;
+    max-width:480px;
+    box-sizing:border-box;
 
-    background:#fff;
-
-    padding:35px 25px;
+    background:rgba(255,255,255,.95);
+    padding:40px 30px;
 
     border-radius:25px;
 
+    backdrop-filter:blur(10px);
+
+    border:1px solid rgba(255,255,255,.3);
+
     box-shadow:
-    0 15px 40px rgba(0,0,0,.2);
+      0 15px 40px rgba(0,0,0,.2);
 
     text-align:center;
 }
-
+    
+.password-box{
+    position:relative;
+    margin-bottom:20px;
+}
+    
 .logo{
-    width:120px;
-    height:120px;
-    border
+    width:140px;
+    height:auto;
+    margin-bottom:20px;
+}
 
 h1{
     margin:0;
     color:#1565c0;
+    font-size:34px;
+    font-weight:700;
 }
 
 p{
     color:#666;
-    margin-bottom:25px;
+    margin-bottom:35px;
+    font-size:20px;
 }
-
+    
 input{
     width:100%;
-    padding:14px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    margin-bottom:15px;
+    height:65px;
+
+    padding:0 60px 0 20px;
+
+    border:2px solid #e5e7eb;
+    border-radius:15px;
+
+    font-size:18px;
+
     box-sizing:border-box;
 }
-
+    
 button{
     width:100%;
-    padding:14px;
+    height:65px;
 
     border:none;
-    border-radius:10px;
+    border-radius:15px;
 
-    background:#1976d2;
+    background:linear-gradient(
+        135deg,
+        #1976d2,
+        #0d47a1
+    );
+
     color:white;
-    font-weight:bold;
-    font-size:16px;
+
+    font-size:20px;
+    font-weight:700;
 
     cursor:pointer;
+
+    box-shadow:
+      0 10px 25px rgba(25,118,210,.35);
+
+    transition:.2s;
+}
+
+button:active{
+    transform:scale(.98);
 }
 
 button:hover{
-    background:#125ca8;
+    transform:translateY(-2px);
 }
-
-.password-box{
-    position:relative;
+    
+input:focus{
+    outline:none;
+    border-color:#1976d2;
 }
 
 .password-box span{
     position:absolute;
-    right:15px;
-    top:16px;
+    right:20px;
+    top:50%;
+    transform:translateY(-50%);
     cursor:pointer;
-    font-size:20px;
+    font-size:28px;
 }
 
 </style>
