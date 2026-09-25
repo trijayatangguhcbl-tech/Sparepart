@@ -11,7 +11,7 @@ function login(){
         );
 
         location.href =
-        "dashboard.html";
+        "Dashboard.html";
     }
 
     else if(password === "supervisor"){
@@ -22,7 +22,7 @@ function login(){
         );
 
         location.href =
-        "dashboard.html";
+        "Dashboard.html";
     }
 
     else{
