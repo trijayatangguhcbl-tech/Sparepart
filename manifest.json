@@ -2,10 +2,14 @@
   "name": "Sparepart Finder",
   "short_name": "Sparepart",
   "description": "Pencarian Sparepart Internal",
-  "start_url": "/",
+
+  "start_url": "/sparepart/",
+  "scope": "/sparepart/",
+
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1565c0",
+
   "icons": [
     {
       "src": "icon-192.png",
