@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favorite Sparepart</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:8px;
+    text-align:left;
+}
+
+th{
+    background:#1976d2;
+    color:white;
+}
+
+button{
+    padding:5px 10px;
+    cursor:pointer;
+}
+</style>
+
+</head>
+<body>
+
+<h2>Favorite Sparepart</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>SAP</th>
+            <th>Nama Material</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="favoriteTable"></tbody>
+</table>
+
+<script>
+
+loadFavorite();
+
+function loadFavorite(){
+
+    let favorite = JSON.parse(
+        localStorage.getItem("favorite") || "[]"
+    );
+
+    let html = "";
+
+    favorite.forEach(item => {
+
+        html += `
+        <tr>
+            <td>${item["SAP"] || ""}</td>
+            <td>${item["MATERIAL"] || ""}</td>
+            <td>
+                <button onclick="removeFavorite('${item["SAP"]}')">
+                    Hapus
+                </button>
+            </td>
+        </tr>
+        `;
+
+    });
+
+    document.getElementById("favoriteTable").innerHTML =
+    html;
+
+}
+
+function removeFavorite(sap){
+
+    let favorite = JSON.parse(
+        localStorage.getItem("favorite") || "[]"
+    );
+
+    favorite = favorite.filter(
+        x => x["SAP"] !== sap
+    );
+
+    localStorage.setItem(
+        "favorite",
+        JSON.stringify(favorite)
+    );
+
+    loadFavorite();
+
+}
+
+</script>
+
+</body>
+</html>
