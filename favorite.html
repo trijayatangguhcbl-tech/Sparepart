@@ -3,51 +3,114 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Favorite Sparepart</title>
+<title>Favorite</title>
 
 <style>
+
 body{
-    font-family: Arial, sans-serif;
-    margin:20px;
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
 
-th,td{
-    border:1px solid #ddd;
-    padding:8px;
-    text-align:left;
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
-th{
-    background:#1976d2;
+.btn{
+    border:none;
+    padding:8px 12px;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.back{
+    background:#0d6efd;
     color:white;
 }
 
-button{
-    padding:5px 10px;
+.clear{
+    background:red;
+    color:white;
+}
+
+.card{
+    padding:15px;
+    border-bottom:1px solid #ddd;
+}
+
+.card h3{
+    margin:0;
+}
+
+.action{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:10px;
+}
+
+.add{
+    background:green;
+    color:white;
+}
+
+.delete{
+    background:red;
+    color:white;
+}
+
+.empty{
+    text-align:center;
+    color:gray;
+    padding:30px;
+}
+
+.back{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
     cursor:pointer;
 }
-</style>
 
+</style>
 </head>
 <body>
 
-<h2>Favorite Sparepart</h2>
+<div class="container">
 
-<table>
-    <thead>
-        <tr>
-            <th>SAP</th>
-            <th>Nama Material</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody id="favoriteTable"></tbody>
-</table>
+    <div class="header">
+
+        <h2>⭐ Favorite</h2>
+
+        <div>
+            <button class="back"
+			onclick="location.href='request.html'">
+			← Request
+		</button>
+        </div>
+
+    </div>
+
+    <div id="favoriteList"></div>
+
+</div>
 
 <script>
 
@@ -55,50 +118,110 @@ loadFavorite();
 
 function loadFavorite(){
 
-    let favorite = JSON.parse(
-        localStorage.getItem("favorite") || "[]"
-    );
+    let fav =
+    JSON.parse(localStorage.getItem("favorite") || "[]");
 
     let html = "";
 
-    favorite.forEach(item => {
+    if(fav.length === 0){
 
-        html += `
-        <tr>
-            <td>${item["SAP"] || ""}</td>
-            <td>${item["MATERIAL"] || ""}</td>
-            <td>
-                <button onclick="removeFavorite('${item["SAP"]}')">
-                    Hapus
-                </button>
-            </td>
-        </tr>
-        `;
+        html =
+        '<div class="empty">Belum ada favorit</div>';
 
-    });
+    }else{
 
-    document.getElementById("favoriteTable").innerHTML =
+        fav.forEach((item,index)=>{
+
+            let nama =
+            item["name part"] ||
+            item["DESCRIPTION"] ||
+            "-";
+
+            html += `
+
+            <div class="card">
+
+                <h3>${nama}</h3>
+
+                <p>
+                <b>SAP :</b>
+                ${item["SAP"] || "-"}
+                </p>
+
+                <div class="action">
+
+                    <button
+                    class="btn add"
+                    onclick="addToCart(${index})">
+                    + Keranjang
+                    </button>
+
+                    <button
+					class="btn delete"
+					onclick="hapusFavorite(${index})">
+					🗑
+					</button>
+
+                </div>
+
+            </div>
+
+            `;
+        });
+    }
+
+    document.getElementById("favoriteList").innerHTML =
     html;
-
 }
 
-function removeFavorite(sap){
+function hapusFavorite(index){
 
-    let favorite = JSON.parse(
-        localStorage.getItem("favorite") || "[]"
-    );
+    let fav =
+    JSON.parse(localStorage.getItem("favorite") || "[]");
 
-    favorite = favorite.filter(
-        x => x["SAP"] !== sap
-    );
+    fav.splice(index,1);
 
     localStorage.setItem(
         "favorite",
-        JSON.stringify(favorite)
+        JSON.stringify(fav)
     );
 
     loadFavorite();
+}
 
+function addToCart(index){
+
+    let fav =
+    JSON.parse(localStorage.getItem("favorite") || "[]");
+
+    let cart =
+    JSON.parse(localStorage.getItem("request") || "[]");
+
+    let item = fav[index];
+
+    let sap = item["SAP"];
+
+    let existing =
+    cart.find(x => x["SAP"] === sap);
+
+    if(existing){
+
+        existing.qty =
+        (existing.qty || 1) + 1;
+
+    }else{
+
+        item.qty = 1;
+
+        cart.push(item);
+    }
+
+    localStorage.setItem(
+        "request",
+        JSON.stringify(cart)
+    );
+
+    alert("Ditambahkan ke Cart");
 }
 
 </script>
