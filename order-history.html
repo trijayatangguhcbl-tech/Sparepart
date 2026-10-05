@@ -159,6 +159,28 @@ tr:nth-child(even){
     font-size:13px;
 }
 
+.followup-btn{
+    width:100%;
+    margin-top:12px;
+    border:none;
+    background:#25D366;
+    color:white;
+    padding:12px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.followup-btn:hover{
+    background:#1EBE5D;
+}
+
+.followup-btn:active{
+    transform:scale(.98);
+}
+
 </style>
 </head>
 
@@ -254,7 +276,21 @@ function loadHistory(){
                     <div class="notes">
                         ${item["notes"] || "-"}
                     </div>
-
+					
+					<button
+						class="followup-btn"
+						onclick="followUp(
+							'${item["Nama part"] || "-"}',
+							'${item["SAP"] || "-"}',
+							'${item["Qty"] || "-"}',
+							'${status}',
+							'${item["requestor"] || "-"}',
+							'${item["tanggal"] || "-"}',
+							'${item["notes"] || "-"}'
+						)">
+						💬 Follow Up via WhatsApp
+					</button>
+					
                 </div>
                 `;
             });
@@ -264,6 +300,45 @@ function loadHistory(){
         }
     });
 
+}
+
+function followUp(
+    namaPart,
+    sap,
+    qty,
+    status,
+    requestor,
+    tanggal,
+    notes
+){
+
+    const pesan = `Dear Team,
+
+Mohon follow up untuk request sparepart berikut :
+
+━━━━━━━━━━━━━━━
+
+Part      : ${namaPart}
+SAP       : ${sap}
+Qty       : ${qty}
+Status    : ${status}
+Requestor : ${requestor}
+Tanggal   : ${tanggal}
+
+Catatan :
+${notes}
+
+━━━━━━━━━━━━━━━
+
+Mohon update progress terbaru.
+
+Terima kasih.`;
+
+    const url =
+        "https://wa.me/?text=" +
+        encodeURIComponent(pesan);
+
+    window.open(url, "_blank");
 }
 
 </script>
