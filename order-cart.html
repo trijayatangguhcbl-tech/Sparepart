@@ -253,6 +253,8 @@ function loadCart(){
     let cart =
     JSON.parse(localStorage.getItem("order") || "[]");
 
+	console.log("DATA CART :", cart);
+	
     let html = "";
     let total = 0;
 
