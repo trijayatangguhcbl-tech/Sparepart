@@ -46,6 +46,23 @@ body{
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:15px;
+    margin-bottom:20px; /* jarak ke tombol */
+}
+
+.logout-area{
+    padding:15px;
+    clear:both;
+}
+
+.logout{
+    width:100%;
+    border:none;
+    background:#e53935;
+    color:white;
+    padding:14px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
 }
 
 .card{
@@ -79,20 +96,6 @@ body{
     margin-top:5px;
 }
 
-.logout-area{
-    padding:15px;
-}
-
-.logout{
-    width:100%;
-    border:none;
-    background:#e53935;
-    color:white;
-    padding:14px;
-    border-radius:12px;
-    font-size:15px;
-    font-weight:bold;
-}
 
 .footer{
     text-align:center;
@@ -128,8 +131,7 @@ body{
         <div class="user-dept" id="userDept"></div>
 
     </div>
-
-</div>
+    
 </div>
 
 <div class="menu">
@@ -170,7 +172,7 @@ body{
 
 <div class="logout-area">
 
-    <button
+<button
 class="logout"
 onclick="logout()">
 👤 GANTI USER
