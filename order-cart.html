@@ -187,50 +187,63 @@ body{
 </div>
 
 <script>
+
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
 
 loadCart();
-	
-async function kirimHistoryKeSheet(cart){
-		const user =
-		JSON.parse(localStorage.getItem("userData")) || {};
-	
-		const notes =
-		document.getElementById("notes").value;
 
-		const urgency =
-		document.getElementById("urgency").value;
+async function kirimHistoryKeSheet(cart){
+
+    const user =
+    JSON.parse(localStorage.getItem("userData")) || {};
+
+    const notes =
+    document.getElementById("notes").value.trim();
+
+    const urgency =
+    document.getElementById("urgency").value;
+
     for(const item of cart){
 
         try{
 
-            const res = await fetch(SCRIPT_URL,{
-					method:"POST",
-					mode:"no-cors",
-					headers:{
-						"Content-Type":"text/plain"
-					},
+            await fetch(SCRIPT_URL,{
+                method:"POST",
+                mode:"no-cors",
+                headers:{
+                    "Content-Type":"text/plain"
+                },
                 body:JSON.stringify({
-			    tipe:"ORDER",
-			    namaPart:item["Name part"] || item["DESCRIPTION"] || "-",
-			    sap:item["SAP"] || "-",
-			    qty:item.qty || 1,
-			    status:"PROCESS",
-			    requestor:user.nama || "-",
-			    departemen:user.departemen || "-",
-			    notes:notes,
-			    urgency:urgency
-			})
+
+                    tipe:"ORDER",
+
+                    namaPart:
+                    item["name part"] ||
+                    item["Name part"] ||
+                    item["DESCRIPTION"] ||
+                    "-",
+
+                    sap:item["SAP"] || "-",
+
+                    qty:item.qty || 1,
+
+                    status:"PROCESS",
+
+                    requestor:user.nama || "-",
+
+                    departemen:user.departemen || "-",
+
+                    notes:notes,
+
+                    urgency:urgency
+                })
             });
-
-            const hasil = await res.text();
-
-            console.log("HASIL:",hasil);
 
         }catch(err){
 
-            console.log("ERROR:",err);
+            console.log("ERROR :",err);
+
         }
     }
 }
@@ -262,8 +275,8 @@ function loadCart(){
                 <div class="item-info">
 
                     <h3>
-					${item["name part"] || item["DESCRIPTION"] || "-"}
-					</h3>
+                    ${item["name part"] || item["Name part"] || item["DESCRIPTION"] || "-"}
+                    </h3>
 
                     <p>
                     SAP :
@@ -314,11 +327,8 @@ function plusQty(index){
     let cart =
     JSON.parse(localStorage.getItem("order") || "[]");
 
-    if(!cart[index].qty){
-        cart[index].qty = 1;
-    }
-
-    cart[index].qty++;
+    cart[index].qty =
+    (cart[index].qty || 1) + 1;
 
     localStorage.setItem(
         "order",
@@ -333,9 +343,8 @@ function minusQty(index){
     let cart =
     JSON.parse(localStorage.getItem("order") || "[]");
 
-    if(!cart[index].qty){
-        cart[index].qty = 1;
-    }
+    cart[index].qty =
+    cart[index].qty || 1;
 
     if(cart[index].qty > 1){
         cart[index].qty--;
@@ -370,46 +379,51 @@ function hapusItem(index){
 async function konfirmasiWA(){
 
     const user =
-    JSON.parse(localStorage.getItem( || {};
+    JSON.parse(localStorage.getItem("userData")) || {};
 
-    let cart =
+    const cart =
     JSON.parse(localStorage.getItem("order") || "[]");
 
     if(cart.length === 0){
+
         alert("Keranjang Kosong");
         return;
+
     }
 
     const notes =
-    document.getElementById("notes").value;
+    document.getElementById("notes").value.trim();
 
     const urgency =
     document.getElementById("urgency").value;
 
     let pesan =
-    `*ORDER MATERIAL WTP*%0A
-Nama : ${user.nama || "-"}%0A
-Departemen : ${user.departemen || "-"}%0A
-Urgency : ${urgency}%0A
-Notes : ${notes || "-"}%0A%0A`;
+    `*ORDER MATERIAL WTP*%0A` +
+    `Nama : ${user.nama || "-"}%0A` +
+    `Departemen : ${user.departemen || "-"}%0A` +
+    `Urgency : ${urgency}%0A` +
+    `Notes : ${notes || "-"}%0A%0A`;
 
     cart.forEach((item,no)=>{
 
         const namaPart =
+        item["name part"] ||
         item["Name part"] ||
         item["DESCRIPTION"] ||
         "-";
 
         pesan +=
-        `${no+1}. ${namapart}%0A` +
+        `${no+1}. ${namaPart}%0A` +
         `SAP : ${item["SAP"] || "-"}%0A` +
         `Qty : ${item.qty || 1}%0A` +
-        `====================%0A`;
+        `━━━━━━━━━━━━━━%0A`;
 
     });
 
     const waUrl =
-    `https://wa.me/?text=${pesan}`;
+    `https://wa.me/?text=${encodeURIComponent(
+        decodeURIComponent(pesan)
+    )}`;
 
     await kirimHistoryKeSheet(cart);
 
@@ -423,7 +437,6 @@ Notes : ${notes || "-"}%0A%0A`;
     loadCart();
 
     alert("Order berhasil dikirim");
-
 }
 
 </script>
