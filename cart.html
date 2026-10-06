@@ -146,6 +146,9 @@ body{
 
 <script>
 
+const user =
+JSON.parse(localStorage.getItem("userData")) || {};
+
 const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
 
@@ -164,13 +167,25 @@ async function kirimHistoryKeSheet(cart){
 						"Content-Type":"text/plain"
 					},
                 body:JSON.stringify({
-					tipe:"REQUEST",
-                    namaPart:item["name part"] || item["DESCRIPTION"] || "-",
-                    sap:item["SAP"] || "-",
-                    qty:item.qty || 1,
-                    status:"OPEN",
-                    requestor:"USER"
-                })
+
+				    tipe:"REQUEST",
+				
+				    namaPart:
+				    item["name part"] ||
+				    item["DESCRIPTION"] ||
+				    "-",
+				
+				    sap:item["SAP"] || "-",
+				
+				    qty:item.qty || 1,
+				
+				    status:"OPEN",
+				
+				    requestor:user.nama || "-",
+				
+				    departemen:user.departemen || "-"
+				
+				})
             });
 
             const hasil = await res.text();
@@ -309,45 +324,52 @@ function hapusItem(index){
 
 async function konfirmasiWA(){
 
+    const user =
+    JSON.parse(localStorage.getItem("userData")) || {};
+
     let cart =
     JSON.parse(localStorage.getItem("request") || "[]");
 
     if(cart.length === 0){
+
         alert("Keranjang Kosong");
         return;
+
     }
 
-    let pesan = "*REQUEST MATERIAL WTP*%0A%0A";
+    let pesan =
+    `*REQUEST MATERIAL WTP*%0A` +
+    `Nama : ${user.nama || "-"}%0A` +
+    `Departemen : ${user.departemen || "-"}%0A%0A`;
 
-cart.forEach((item,no)=>{
+    cart.forEach((item,no)=>{
 
-    const nama =
-    item["name part"] ||
-    item["DESCRIPTION"] ||
-    "-";
+        const namaPart =
+        item["name part"] ||
+        item["DESCRIPTION"] ||
+        "-";
 
-    pesan +=
-    `${no+1}. ${nama}%0A` +
-    `SAP : ${item["SAP"] || "-"}%0A` +
-    `Qty : ${item.qty || 1}%0A` +
-    `====================%0A`;
+        pesan +=
+        `${no+1}. ${namaPart}%0A` +
+        `SAP : ${item["SAP"] || "-"}%0A` +
+        `Qty : ${item.qty || 1}%0A` +
+        `====================%0A`;
 
-});
+    });
 
-const waUrl =
-`https://wa.me/?text=${pesan}`;
+    await kirimHistoryKeSheet(cart);
 
-window.open(waUrl,"_blank");
+    const waUrl =
+    `https://wa.me/?text=${pesan}`;
 
-await kirimHistoryKeSheet(cart);
+    window.open(waUrl,"_blank");
 
-window.open(
-    `https://wa.me/?text=${pesan}`,
-    "_blank"
-);
-localStorage.removeItem("request");
- 
-loadCart();
+    localStorage.removeItem("request");
+
+    loadCart();
+
+    alert("Request berhasil dikirim");
+
 }
 
 </script>
