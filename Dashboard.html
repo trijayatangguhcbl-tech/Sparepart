@@ -165,15 +165,14 @@ body{
 
     </div>
 
-</div>
 
 <div class="logout-area">
 
     <button
-        class="logout"
-        onclick="logout()">
-        🚪 LOGOUT
-    </button>
+class="logout"
+onclick="logout()">
+👤 GANTI USER
+</button>
 
 </div>
 
@@ -181,6 +180,7 @@ body{
     CC/CW & WTP Material System
 </div>
 
+   
 <script>
 
 const user =
@@ -190,30 +190,24 @@ if(!user){
     location.href="index.html";
 }
 
-document.getElementById("userName")
-.innerText = user.nama;
+document.getElementById("userName").innerText =
+user.nama;
 
-document.getElementById("userDept")
-.innerText = user.departemen;
-
-<button
-class="logout"
-onclick="logout()">
-👤 GANTI USER
-</button>
+document.getElementById("userDept").innerText =
+user.departemen;
 
 function logout(){
 
-if(confirm("Yakin ingin ganti user?")){
+    if(confirm("Yakin ingin ganti user?")){
 
-    localStorage.removeItem("userData");
+        localStorage.removeItem("userData");
 
-    location.href = "index.html";
+        window.location.href = "index.html";
 
     }
 
 }
-    
+
 </script>
 
 </body>
