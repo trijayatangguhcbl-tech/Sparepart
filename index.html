@@ -148,8 +148,7 @@ window.onload = function(){
 
     if(user){
 
-        // Jika sudah pernah login
-        window.location.href = "dashboard.html";
+        window.location.href = "Dashboard.html";
 
     }else{
 
@@ -179,10 +178,8 @@ function simpanUser(){
     }
 
     const data = {
-
         nama:nama,
         departemen:departemen
-
     };
 
     localStorage.setItem(
@@ -190,29 +187,10 @@ function simpanUser(){
         JSON.stringify(data)
     );
 
-    document.getElementById("loginModal")
-    .style.display = "none";
-
-    tampilkanUser();
+    // LANGSUNG MASUK DASHBOARD
+    window.location.href = "dashboard.html";
 
 }
-
-
-// tampilkan user
-
-function tampilkanUser(){
-
-    const user =
-    JSON.parse(localStorage.getItem("userData"));
-
-    document.getElementById("namaUser")
-    .innerText = user.nama;
-
-    document.getElementById("deptUser")
-    .innerText = user.departemen;
-
-}
-
 
 // ganti user
 
