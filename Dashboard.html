@@ -201,6 +201,18 @@ class="logout"
 onclick="logout()">
 👤 GANTI USER
 </button>
+
+function logout(){
+
+if(confirm("Yakin ingin ganti user?")){
+
+    localStorage.removeItem("userData");
+
+    location.href = "index.html";
+
+    }
+
+}
     
 </script>
 
