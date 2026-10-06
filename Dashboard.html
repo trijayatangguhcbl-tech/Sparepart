@@ -100,18 +100,36 @@ body{
     font-size:12px;
     padding:15px;
 }
+
+    .user-name{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.user-dept{
+    font-size:14px;
+    opacity:.9;
+}
+    
 </style>
 </head>
 
 <body>
 
 <div class="header">
+
     <h1>🏭 WTP PORTAL</h1>
 
     <div class="user-info">
-        Login Sebagai :
-        <b id="roleText"></b>
+
+        <div class="user-name" id="userName"></div>
+
+        <div class="user-dept" id="userDept"></div>
+
     </div>
+
+</div>
 </div>
 
 <div class="menu">
@@ -165,28 +183,25 @@ body{
 
 <script>
 
-const role =
-localStorage.getItem("role");
+const user =
+JSON.parse(localStorage.getItem("userData"));
 
-if(!role){
-    alert("Silakan Login");
+if(!user){
     location.href="index.html";
 }
 
-document.getElementById("roleText")
-.innerText = role.toUpperCase();
+document.getElementById("userName")
+.innerText = user.nama;
 
-if(role==="maintenance"){
-    document
-    .getElementById("monitoringMenu")
-    .style.display="none";
-}
+document.getElementById("userDept")
+.innerText = user.departemen;
 
-function logout(){
-    localStorage.clear();
-    location.href="index.html";
-}
-
+<button
+class="logout"
+onclick="logout()">
+👤 GANTI USER
+</button>
+    
 </script>
 
 </body>
