@@ -186,10 +186,6 @@ body{
 
 <script>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
-<script>
-
 const ORDER_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=110003674&single=true&output=csv";
 
@@ -225,13 +221,13 @@ function loadSummary(){
                 .trim()
                 .toUpperCase();
 
-                if(status === "PROCESS"){
-                    processQty += qty;
-                }
-
-                if(status === "DONE"){
-                    doneQty += qty;
-                }
+               if(status === "PROCESS"){
+				    processQty++;
+				}
+				
+				if(status === "DONE"){
+				    doneQty++;
+				}
 
             });
 
