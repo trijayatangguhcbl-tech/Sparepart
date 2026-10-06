@@ -186,35 +186,43 @@ body{
 
 <script>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+
 const ORDER_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=110003674&single=true&output=csv";
 
 loadSummary();
 
+// refresh otomatis setiap 30 detik
+setInterval(loadSummary,30000);
+
 function loadSummary(){
 
-    const url =
+    const noCacheUrl =
     ORDER_URL + "&t=" + Date.now();
 
-    Papa.parse(url,{
+    Papa.parse(noCacheUrl,{
         download:true,
         header:true,
         skipEmptyLines:true,
 
         complete:function(result){
 
-            console.log(result.data);
+            console.log("DATA EXCEL :",result.data);
 
             let processQty = 0;
             let doneQty = 0;
 
             result.data.forEach(item=>{
 
-                let qty =
+                const qty =
                 Number(item["Qty"]) || 0;
 
-                let status =
+                const status =
                 (item["Status"] || "")
+                .trim()
                 .toUpperCase();
 
                 if(status === "PROCESS"){
@@ -232,6 +240,15 @@ function loadSummary(){
 
             document.getElementById("doneQty")
             .innerText = doneQty;
+
+        },
+
+        error:function(err){
+
+            console.error(
+                "Gagal membaca Excel :",
+                err
+            );
 
         }
 
