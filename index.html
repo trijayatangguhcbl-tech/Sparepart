@@ -148,7 +148,8 @@ window.onload = function(){
 
     if(user){
 
-        tampilkanUser();
+        // Jika sudah pernah login
+        window.location.href = "dashboard.html";
 
     }else{
 
@@ -178,8 +179,10 @@ function simpanUser(){
     }
 
     const data = {
-        nama: nama,
-        departemen: departemen
+
+        nama:nama,
+        departemen:departemen
+
     };
 
     localStorage.setItem(
@@ -187,8 +190,10 @@ function simpanUser(){
         JSON.stringify(data)
     );
 
-    // Langsung ke dashboard
-    window.location.href = "dashboard.html";
+    document.getElementById("loginModal")
+    .style.display = "none";
+
+    tampilkanUser();
 
 }
 
