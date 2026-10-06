@@ -191,8 +191,12 @@ const SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
 
 loadCart();
+	
 async function kirimHistoryKeSheet(cart){
-			const notes =
+		const user =
+		JSON.parse(localStorage.getItem("userData")) || {};
+	
+		const notes =
 		document.getElementById("notes").value;
 
 		const urgency =
@@ -208,14 +212,15 @@ async function kirimHistoryKeSheet(cart){
 						"Content-Type":"text/plain"
 					},
                 body:JSON.stringify({
-				tipe:"ORDER",
-				namaPart:item["Name part"] || item["DESCRIPTION"] || "-",
-				sap:item["SAP"] || "-",
-				qty:item.qty || 1,
-				status:"PROCESS",
-				requestor:"USER",
-				notes:notes,
-				urgency:urgency
+			    tipe:"ORDER",
+			    namaPart:item["Name part"] || item["DESCRIPTION"] || "-",
+			    sap:item["SAP"] || "-",
+			    qty:item.qty || 1,
+			    status:"PROCESS",
+			    requestor:user.nama || "-",
+			    departemen:user.departemen || "-",
+			    notes:notes,
+			    urgency:urgency
 			})
             });
 
@@ -364,6 +369,9 @@ function hapusItem(index){
 
 async function konfirmasiWA(){
 
+    const user =
+    JSON.parse(localStorage.getItem( || {};
+
     let cart =
     JSON.parse(localStorage.getItem("order") || "[]");
 
@@ -372,17 +380,28 @@ async function konfirmasiWA(){
         return;
     }
 
-    let pesan = "*ORDER MATERIAL WTP*%0A%0A";
+    const notes =
+    document.getElementById("notes").value;
+
+    const urgency =
+    document.getElementById("urgency").value;
+
+    let pesan =
+    `*ORDER MATERIAL WTP*%0A
+Nama : ${user.nama || "-"}%0A
+Departemen : ${user.departemen || "-"}%0A
+Urgency : ${urgency}%0A
+Notes : ${notes || "-"}%0A%0A`;
 
     cart.forEach((item,no)=>{
 
-        const nama =
-        item["name part"] ||
+        const namaPart =
+        item["Name part"] ||
         item["DESCRIPTION"] ||
         "-";
 
         pesan +=
-        `${no+1}. ${nama}%0A` +
+        `${no+1}. ${namapart}%0A` +
         `SAP : ${item["SAP"] || "-"}%0A` +
         `Qty : ${item.qty || 1}%0A` +
         `====================%0A`;
@@ -392,25 +411,19 @@ async function konfirmasiWA(){
     const waUrl =
     `https://wa.me/?text=${pesan}`;
 
-    // kirim ke sheet
     await kirimHistoryKeSheet(cart);
 
-    // buka whatsapp
     window.open(waUrl,"_blank");
 
-    // kosongkan keranjang
     localStorage.removeItem("order");
 
-    // reset form
     document.getElementById("notes").value = "";
     document.getElementById("urgency").value = "STOCK";
-	
-    // refresh tampilan
+
     loadCart();
-	
-	location.reload();
-	
+
     alert("Order berhasil dikirim");
+
 }
 
 </script>
