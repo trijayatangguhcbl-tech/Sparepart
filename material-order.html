@@ -328,7 +328,7 @@ async function saveData(){
             },
 
             body:JSON.stringify({
-
+				
 			    action:"ADD_SPAREPART",
 			
 			    SAP:sap,
@@ -340,7 +340,18 @@ async function saveData(){
 
         });
 
-        const result = await res.json();
+        const text = await res.text();
+
+		console.log(text);
+		
+		let result = {};
+		
+		try{
+		    result = JSON.parse(text);
+		}catch(e){
+		    alert("Response bukan JSON:\n" + text);
+		    return;
+		}
 
         if(result.success){
 
@@ -363,6 +374,8 @@ async function saveData(){
         "Gagal koneksi: " +
         err.message
     );
+}
+
 }
 	
 </script>
