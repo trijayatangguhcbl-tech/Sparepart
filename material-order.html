@@ -131,8 +131,7 @@ const SHEET_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeEoFLkSsqeUMt1-Twhsy97KTf9VAPEFBZco4ZvOBiZhuUr9kKiqDeolnATfjcsg/pub?gid=1610358830&single=true&output=csv";
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
-	
+"https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";	
 let sparepartDB = [];
 
 
@@ -310,23 +309,22 @@ async function saveData(){
 
     try{
 
-        await fetch(API_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                action: "ADD_SPAREPART",
-                SAP: sap,
-                DESCRIPTION: description,
-                PROGRAM: program,
-                NOTES: notes
-            })
-        });
+        await fetch(API_URL,{
+	    method:"POST",
+	    mode:"no-cors",
+	    headers:{
+	        "Content-Type":"text/plain"
+	    },
+	    body:JSON.stringify({
+	        action:"ADD_SPAREPART",
+	        SAP:sap,
+	        DESCRIPTION:description,
+	        PROGRAM:program,
+	        NOTES:notes
+	    })
+	});
 
         alert("Data berhasil dikirim");
-
         closeAddForm();
 
         document.getElementById("newSap").value = "";
