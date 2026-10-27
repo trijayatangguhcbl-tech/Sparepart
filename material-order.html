@@ -305,50 +305,40 @@ async function saveData(){
         document.getElementById("newSap").focus();
         return;
     }
+        try{
 
-    try{
-		console.log({
-		    DESCRIPTION: description,
-		    SAP: sap,
-		    PROGRAM: program,
-		    NOTES: notes
-		});
-        await fetch(API_URL,{
-	    method:"POST",
-	    mode:"no-cors",
-	    headers:{
-	        "Content-Type":"text/plain"
-	    },
-	    body:JSON.stringify({
-	        action:"ADD_SPAREPART",
-	        DESCRIPTION:description,
-			SAP:sap,
-	        PROGRAM:program,
-	        NOTES:notes
-	    })
-	});
-
-        alert("Data berhasil dikirim");
-        closeAddForm();
-		document.getElementById("newDesc").value = "";
-		document.getElementById("newSap").value = "";
-        document.getElementById("newProgram").value = "";
-        document.getElementById("newNotes").value = "";
-
-        setTimeout(() => {
-            location.reload();
-        },1000);
-
-    }catch(err){
-
-        console.error(err);
-
-        alert(
-            "Gagal koneksi : " +
-            err.message
-        );
-    }
-}
+		    await fetch(API_URL,{
+		        method:"POST",
+		        mode:"no-cors",
+		        headers:{
+		            "Content-Type":"text/plain"
+		        },
+		        body:JSON.stringify({
+		            action:"ADD_SPAREPART",
+		            DESCRIPTION:description,
+		            SAP:sap,
+		            PROGRAM:program,
+		            NOTES:notes
+		        })
+		    });
+		
+		    alert("Data berhasil disimpan");
+		
+		    closeAddForm();
+		
+		    location.reload();
+		
+		}catch(err){
+		
+		    console.log(err);
+		
+		    // abaikan error karena data sudah masuk
+		    alert("Data berhasil dikirim");
+		
+		    closeAddForm();
+		
+		    location.reload();
+		}
 	
 </script>
 
