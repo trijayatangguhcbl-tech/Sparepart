@@ -329,14 +329,14 @@ async function saveData(){
 
             body:JSON.stringify({
 
-                action:"ADD_SPAREPART",
-
-                SAP:SAP,
-                DESCRIPTION:DESCRIPTION,
-                PROGRAM:PROGRAM,
-                NOTES:NOTES
-
-            })
+			    action:"ADD_SPAREPART",
+			
+			    SAP:sap,
+			    DESCRIPTION:description,
+			    PROGRAM:program,
+			    NOTES:notes
+			
+			})
 
         });
 
@@ -357,9 +357,12 @@ async function saveData(){
 
     }catch(err){
 
-        console.error(err);
-        alert("Gagal koneksi Apps Script");
-    }
+    console.error(err);
+
+    alert(
+        "Gagal koneksi: " +
+        err.message
+    );
 }
 	
 </script>
