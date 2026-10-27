@@ -130,6 +130,9 @@ Loading Data...
 const SHEET_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTeEoFLkSsqeUMt1-Twhsy97KTf9VAPEFBZco4ZvOBiZhuUr9kKiqDeolnATfjcsg/pub?gid=1610358830&single=true&output=csv";
 
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";
+	
 let sparepartDB = [];
 
 
@@ -292,6 +295,73 @@ function closeAddForm(){
     .style.display="none";
 }
 
+async function saveData(){
+
+    const sap =
+    document.getElementById("newSap").value.trim();
+
+    const description =
+    document.getElementById("newDesc").value.trim();
+
+    const program =
+    document.getElementById("newProgram").value.trim();
+
+    const notes =
+    document.getElementById("newNotes").value.trim();
+
+    // VALIDASI WAJIB
+    if(!sap){
+
+        alert("SAP wajib diisi");
+        document.getElementById("newSap").focus();
+        return;
+    }
+
+    try{
+
+        const res = await fetch(API_URL,{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+
+                action:"ADD_SPAREPART",
+
+                SAP:SAP,
+                DESCRIPTION:DESCRIPTION,
+                PROGRAM:PROGRAM,
+                NOTES:NOTES
+
+            })
+
+        });
+
+        const result = await res.json();
+
+        if(result.success){
+
+            alert("Data berhasil ditambahkan");
+
+            closeAddForm();
+
+            location.reload();
+
+        }else{
+
+            alert("Gagal menyimpan");
+        }
+
+    }catch(err){
+
+        console.error(err);
+        alert("Gagal koneksi Apps Script");
+    }
+}
+	
 </script>
 
 <div id="addModal" class="modal">
@@ -299,11 +369,15 @@ function closeAddForm(){
     <div class="modal-content">
 
         <h3>Input Sparepart Baru</h3>
+		<p style="color:red;font-size:12px">
+		* SAP wajib diisi
+		</p>
 
-        <input type="text" id="newSap" placeholder="SAP">
-        <input type="text" id="newDesc" placeholder="Description">
-        <input type="text" id="newProgram" placeholder="Program">
-        <textarea id="newNotes" placeholder="Notes"></textarea>
+        <input
+    type="text" id="newSap" placeholder="SAP *" required>
+        <input type="text" id="newDesc" placeholder="DESCRIPTION">
+        <input type="text" id="newProgram" placeholder="PROGRAM">
+        <textarea id="newNotes" placeholder="NOTES"></textarea>
 
         <br><br>
 
