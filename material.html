@@ -173,7 +173,17 @@ function loadSparepart(){
 
     if(data.length===0){
 
-        html="<p>Data tidak ditemukan</p>";
+		html=`
+		<div class="card">
+			<h3>Data tidak ditemukan</h3>
+
+			<button
+				class="btn req"
+				onclick="openAddForm()">
+				+ Tambah Data Baru
+			</button>
+		</div>
+		`;
 
     }else{
 
