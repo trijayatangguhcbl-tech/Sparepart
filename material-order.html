@@ -317,8 +317,8 @@ async function saveData(){
 	    },
 	    body:JSON.stringify({
 	        action:"ADD_SPAREPART",
-	        SAP:sap,
 	        DESCRIPTION:description,
+			SAP:sap,
 	        PROGRAM:program,
 	        NOTES:notes
 	    })
@@ -326,9 +326,9 @@ async function saveData(){
 
         alert("Data berhasil dikirim");
         closeAddForm();
-
+		
+		document.getElementById("newDesc").value = "";
         document.getElementById("newSap").value = "";
-        document.getElementById("newDesc").value = "";
         document.getElementById("newProgram").value = "";
         document.getElementById("newNotes").value = "";
 
@@ -358,9 +358,8 @@ async function saveData(){
 		* SAP wajib diisi
 		</p>
 
-        <input
-    type="text" id="newSap" placeholder="SAP *" required>
-        <input type="text" id="newDesc" placeholder="DESCRIPTION">
+        <input type="text" id="newDesc" placeholder="DES">
+		<input type="text" id="newSap" placeholder="SAP *" required>
         <input type="text" id="newProgram" placeholder="PROGRAM">
         <textarea id="newNotes" placeholder="NOTES"></textarea>
 
