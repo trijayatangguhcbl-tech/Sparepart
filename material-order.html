@@ -74,6 +74,34 @@ body{
     color:white;
 }
 
+.modal{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.4);
+}
+
+.modal-content{
+    background:white;
+    width:90%;
+    max-width:500px;
+    margin:50px auto;
+    padding:20px;
+    border-radius:10px;
+}
+
+.modal-content input,
+.modal-content textarea{
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
 </style>
 
 </head>
@@ -144,9 +172,19 @@ function loadSparepart(){
 
     if(data.length===0){
 
-        html="<p>Data tidak ditemukan</p>";
+		html=`
+		<div class="card">
+			<h3>Data tidak ditemukan</h3>
 
-    }else{
+			<button
+				class="btn req"
+				onclick="openAddForm()">
+				+ Tambah Data Baru
+			</button>
+		</div>
+		`;
+
+	}else{
 
         data.forEach(item=>{
 
@@ -239,7 +277,47 @@ function addOrder(sap){
 
     alert("Masuk Order");
 }
+
+function openAddForm(){
+
+    document
+    .getElementById("addModal")
+    .style.display="block";
+}
+
+function closeAddForm(){
+
+    document
+    .getElementById("addModal")
+    .style.display="none";
+}
+
 </script>
+
+<div id="addModal" class="modal">
+
+    <div class="modal-content">
+
+        <h3>Input Sparepart Baru</h3>
+
+        <input type="text" id="newSap" placeholder="SAP">
+        <input type="text" id="newDesc" placeholder="Description">
+        <input type="text" id="newProgram" placeholder="Program">
+        <textarea id="newNotes" placeholder="Notes"></textarea>
+
+        <br><br>
+
+        <button class="btn req" onclick="saveData()">
+            Simpan
+        </button>
+
+        <button class="btn" onclick="closeAddForm()">
+            Batal
+        </button>
+
+    </div>
+
+</div>
 
 </body>
 </html>
