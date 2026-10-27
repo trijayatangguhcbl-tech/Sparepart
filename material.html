@@ -277,6 +277,20 @@ function addFavorite(sap){
     alert("Masuk Favorite");
 }
 
+	function openAddForm(){
+
+    document
+    .getElementById("addModal")
+    .style.display="block";
+}
+
+function closeAddForm(){
+
+    document
+    .getElementById("addModal")
+    .style.display="none";
+}
+	
 async function saveData(){
 
     const description = document.getElementById("newDesc").value.trim();
