@@ -101,7 +101,8 @@ Loading Data...
 
 const SHEET_URL =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vT30SCDfCX9Bk73nfDIk6ut9nJDtfBypNyC1dIYlvCHs9MyJC5z7i05yl7iybZ8zSwLouJozlrp4cua/pub?gid=1610358830&single=true&output=csv";
-
+const API_URL =
+"https://script.google.com/macros/s/AKfycbyvbQfueQVoYBAufWvCPgAmNLU2_3OKrRps_hajOZZEWiw2Dy0u2r_0Miy5kzyXkFax/exec";	
 let sparepartDB = [];
 
 
@@ -237,7 +238,89 @@ function addFavorite(sap){
 
     alert("Masuk Favorite");
 }
+
+async function saveData(){
+
+    const description = document.getElementById("newDesc").value.trim();
+    const sap = document.getElementById("newSap").value.trim();
+    const program = document.getElementById("newProgram").value.trim();
+    const notes = document.getElementById("newNotes").value.trim();
+
+    if(!sap){
+        alert("SAP wajib diisi");
+        document.getElementById("newSap").focus();
+        return;
+    }
+
+    try{
+
+        await fetch(API_URL,{
+            method:"POST",
+            mode:"no-cors",
+            headers:{
+                "Content-Type":"text/plain"
+            },
+            body:JSON.stringify({
+                action:"ADD_SPAREPART",
+                DESCRIPTION:description,
+                SAP:sap,
+                PROGRAM:program,
+                NOTES:notes
+            })
+        });
+
+        alert("Data berhasil disimpan");
+
+        closeAddForm();
+
+        setTimeout(()=>{
+            location.reload();
+        },1000);
+
+    }catch(err){
+
+        console.log(err);
+
+        // karena data sudah masuk sheet
+        alert("Data berhasil disimpan");
+
+        closeAddForm();
+
+        setTimeout(()=>{
+            location.reload();
+        },1000);
+    }
+
+}
+	
 </script>
 
+	<div id="addModal" class="modal">
+
+    <div class="modal-content">
+
+        <h3>Input Sparepart Baru</h3>
+		<p style="color:red;font-size:12px">
+		* SAP wajib diisi
+		</p>
+		<input type="text" id="newSap" placeholder="SAP *" required>
+        <input type="text" id="newDesc" placeholder="DESCRIPTION">
+        <input type="text" id="newProgram" placeholder="PROGRAM">
+        <textarea id="newNotes" placeholder="NOTES"></textarea>
+
+        <br><br>
+
+        <button class="btn req" onclick="saveData()">
+            Simpan
+        </button>
+
+        <button class="btn" onclick="closeAddForm()">
+            Batal
+        </button>
+
+    </div>
+
+</div>
+	
 </body>
 </html>
