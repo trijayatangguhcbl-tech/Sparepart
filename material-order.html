@@ -297,21 +297,12 @@ function closeAddForm(){
 
 async function saveData(){
 
-    const sap =
-    document.getElementById("newSap").value.trim();
+    const sap = document.getElementById("newSap").value.trim();
+    const description = document.getElementById("newDesc").value.trim();
+    const program = document.getElementById("newProgram").value.trim();
+    const notes = document.getElementById("newNotes").value.trim();
 
-    const description =
-    document.getElementById("newDesc").value.trim();
-
-    const program =
-    document.getElementById("newProgram").value.trim();
-
-    const notes =
-    document.getElementById("newNotes").value.trim();
-
-    // VALIDASI WAJIB
     if(!sap){
-
         alert("SAP wajib diisi");
         document.getElementById("newSap").focus();
         return;
@@ -319,63 +310,43 @@ async function saveData(){
 
     try{
 
-        const res = await fetch(API_URL,{
-
-            method:"POST",
-
-            headers:{
-                "Content-Type":"application/json"
+        await fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "application/json"
             },
-
-            body:JSON.stringify({
-				
-			    action:"ADD_SPAREPART",
-			
-			    SAP:sap,
-			    DESCRIPTION:description,
-			    PROGRAM:program,
-			    NOTES:notes
-			
-			})
-
+            body: JSON.stringify({
+                action: "ADD_SPAREPART",
+                SAP: sap,
+                DESCRIPTION: description,
+                PROGRAM: program,
+                NOTES: notes
+            })
         });
 
-        const text = await res.text();
+        alert("Data berhasil dikirim");
 
-		console.log(text);
-		
-		let result = {};
-		
-		try{
-		    result = JSON.parse(text);
-		}catch(e){
-		    alert("Response bukan JSON:\n" + text);
-		    return;
-		}
+        closeAddForm();
 
-        if(result.success){
+        document.getElementById("newSap").value = "";
+        document.getElementById("newDesc").value = "";
+        document.getElementById("newProgram").value = "";
+        document.getElementById("newNotes").value = "";
 
-            alert("Data berhasil ditambahkan");
-
-            closeAddForm();
-
+        setTimeout(() => {
             location.reload();
-
-        }else{
-
-            alert("Gagal menyimpan");
-        }
+        },1000);
 
     }catch(err){
 
-    console.error(err);
+        console.error(err);
 
-    alert(
-        "Gagal koneksi: " +
-        err.message
-    );
-}
-
+        alert(
+            "Gagal koneksi : " +
+            err.message
+        );
+    }
 }
 	
 </script>
