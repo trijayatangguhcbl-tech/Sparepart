@@ -307,7 +307,12 @@ async function saveData(){
     }
 
     try{
-
+		console.log({
+		    DESCRIPTION: description,
+		    SAP: sap,
+		    PROGRAM: program,
+		    NOTES: notes
+		});
         await fetch(API_URL,{
 	    method:"POST",
 	    mode:"no-cors",
